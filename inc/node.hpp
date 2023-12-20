@@ -23,7 +23,6 @@ namespace ax
         { }
 
         const char* name() const { return m_name.c_str(); }
-        void set_name(const std::string& name) { m_name = name; }
 
         void SetRunning() { m_isRunning = true; }
 
