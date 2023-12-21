@@ -10,10 +10,11 @@
 
 #pragma once
 
+#include <thread>
+
 #include "err.hpp"
 #include "node.hpp"
-
-#include <thread>
+#include "json/json.h"
 
 namespace ax
 {
@@ -23,9 +24,11 @@ namespace ax
     class AX_Pipeline
     {
     public:
-        AX_Pipeline():
+        AX_Pipeline(const Json::Value& config):
+            m_config(config),
             m_hasInit(false),
-            m_hasStart(false)
+            m_hasStart(false),
+            m_input_stream(nullptr)
         { }
 
         virtual ~AX_Pipeline() {}
@@ -40,6 +43,15 @@ namespace ax
             if (m_hasStart)
                 return AX_SUCCESS;
 
+            if (!m_input_stream)
+            {
+                m_input_stream = CreateInputStream();
+                if (!m_input_stream)
+                {
+                    return AX_ERR_NULL_PTR;
+                }
+            }
+                
             // Run
             for (auto& node : m_nodes)
             {
@@ -74,7 +86,7 @@ namespace ax
             if (FindNode(new_node->name()) != nullptr)
                 return false;
 
-            if (0 != new_node->Init())
+            if (0 != new_node->Init(m_config))
             {
                 return false;
             }
@@ -145,9 +157,33 @@ namespace ax
             return nullptr;
         }
 
+        std::shared_ptr<Stream> CreateInputStream(int max_size = -1) const
+        {
+            auto iport = GetInputPort();
+            if (!iport)
+                return nullptr;
+            
+            auto input_stream = std::make_shared<Stream>(max_size);
+            iport->set_stream(input_stream);
+            return input_stream;
+        }
+
+        std::shared_ptr<Stream> CreateOutputStream(int max_size = -1) const
+        {
+            auto oport = GetOutputPort();
+            if (!oport)
+                return nullptr;
+            
+            auto output_stream = std::make_shared<Stream>(max_size);
+            oport->add_stream(output_stream);
+            return output_stream;
+        }
+
     protected:
+        Json::Value m_config;
         std::vector<NodePtr> m_nodes;
         bool m_hasInit;
         bool m_hasStart;
+        std::shared_ptr<Stream> m_input_stream;
     };
 }

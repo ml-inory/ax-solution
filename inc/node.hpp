@@ -1,5 +1,7 @@
 #pragma once
 
+#include "json/json.h"
+
 #include "port.hpp"
 #include "string_utils.hpp"
 
@@ -26,7 +28,7 @@ namespace ax
 
         void SetRunning() { m_isRunning = true; }
 
-        virtual int Init() = 0;
+        virtual int Init(const Json::Value& config) = 0;
 
         virtual int Run() = 0;
 
