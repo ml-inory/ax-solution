@@ -4,6 +4,3 @@
 [submodule "third-party/RTSP"]
 	path = third-party/RTSP
 	url = https://github.com/ZHEQIUSHUI/RTSP.git
-[submodule "third-party/axpi_bsk_sdk"]
-	path = third-party/axpi_bsk_sdk
-	url = https://github.com/sipeed/axpi_bsp_sdk.git
