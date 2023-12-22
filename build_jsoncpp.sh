@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+source select_chip.sh
+
 pwd=`pwd`
 third_party=${pwd}/third-party/jsoncpp
 install_path=${pwd}/third-party-install/jsoncpp
