@@ -33,7 +33,7 @@ namespace ax
 
         virtual ~AX_Pipeline() {}
 
-        virtual int Init() = 0;
+        virtual int Init(const Json::Value& config) = 0;
 
         /// @brief start nodes
         virtual int Start()
